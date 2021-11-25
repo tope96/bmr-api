@@ -55,6 +55,7 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
         }
 
         res.status(400).send(errorMessage);
+        return;
     }
 
     next();
@@ -117,6 +118,7 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
         }
 
         res.status(400).send(errorMessage);
+        return;
     }
 
     next();
