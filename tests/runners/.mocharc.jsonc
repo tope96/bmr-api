@@ -1,0 +1,8 @@
+{
+    "require": [
+        "tests/runners/init.js"
+    ],
+    "spec": [
+        "tests/**/*.spec.ts"
+    ]
+}
