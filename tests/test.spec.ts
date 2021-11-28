@@ -55,6 +55,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Bad request"
         }
@@ -69,6 +70,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of weight " + badWeight + " cannot be greater than 400\n"
         }
@@ -84,6 +86,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of height " + badheight + " cannot be greater than 250\n"
         }
@@ -99,6 +102,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of age " + badAge + " cannot be greater than 130\n"
         }
@@ -114,6 +118,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of sex not exist in " + Object.keys(sexValues) + "\n"
         }
@@ -258,6 +263,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Bad request"
         }
@@ -272,6 +278,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of weight " + badWeight + " cannot be greater than 400\n"
         }
@@ -287,6 +294,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of height " + badheight + " cannot be greater than 250\n"
         }
@@ -302,6 +310,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of age " + badAge + " cannot be greater than 130\n"
         }
@@ -317,6 +326,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of sex not exist in " + Object.keys(sexValues) + "\n"
         }
@@ -332,6 +342,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Value of activity not exist in " + Object.keys(activityValues) + "\n"
         }
@@ -362,6 +373,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Bad request. No params should be provided"
         }
@@ -376,6 +388,7 @@ describe("BMR", () => {
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
+          errorCode: 400,
           path: pathToTest,
           message: "Bad request. No params should be provided"
         }

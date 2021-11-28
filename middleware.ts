@@ -126,7 +126,7 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
 
 export const validateNoParams: Middleware = (req, res, next) => {
     const allowedParams = [];
-    const validity = validateParams(allowedParams, req.query, req.originalUrl, "Bad request. No params should be provided.");
+    const validity = validateParams(allowedParams, req.query, req.originalUrl, "Bad request. No params should be provided");
 
     if(validity !== true){
         res.status(validity.errorCode);
