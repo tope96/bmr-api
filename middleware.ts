@@ -6,18 +6,17 @@ import { sexValues } from './src/services/values/sexValues';
 
 export const validateParamsBmr: Middleware = (req, res, next) => {
 
-    if(!("height" in req.query) || !("weight" in req.query) || !("age" in req.query) || !("sex" in req.query)) {
-        const errorMessage: errorResponse = {
-            path: req.originalUrl,
-            message: "Bad request"
-        }
+    const allowedParams = ["height", "weight", "age", "sex"];
+    const validity = validateParams(allowedParams, req.query, req.originalUrl);
 
-        res.status(400).send(errorMessage);
+    if(validity !== true){
+        res.status(validity.errorCode);
+        res.send(validity);
         return;
     }
 
     const heightValidate: Validatable = {
-        valueName: "height",
+        valueName: allowedParams[0],
         value: +req.query.height,
         require: true,
         min: 0,
@@ -25,7 +24,7 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
     }
 
     const weightValidate: Validatable = {
-        valueName: "weight",
+        valueName: allowedParams[1],
         value: +req.query.weight,
         require: true,
         min: 0,
@@ -33,7 +32,7 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
     }
 
     const ageValidate: Validatable = {
-        valueName: "age",
+        valueName: allowedParams[2],
         value: +req.query.age,
         require: true,
         min: 0,
@@ -41,7 +40,7 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
     }
 
     const sexValidate: Validatable = {
-        valueName: "sex",
+        valueName: allowedParams[3],
         value: <string>req.query.sex,
         require: true,
         allowedValues: Object.keys(sexValues)
@@ -50,6 +49,7 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
     if(!validate(heightValidate)[0] || !validate(weightValidate)[0] || !validate(ageValidate)[0] || !validate(sexValidate)[0]) {
         const message = validate(heightValidate)[1] + validate(weightValidate)[1] + validate(ageValidate)[1] + validate(sexValidate)[1]
         const errorMessage: errorResponse = {
+            errorCode: 400,
             path: req.originalUrl,
             message: message
         }
@@ -62,18 +62,17 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
 }
 
 export const validateParamsCpm: Middleware = (req, res, next) => {
-    if(!("height" in req.query) || !("weight" in req.query) || !("age" in req.query) || !("sex" in req.query) || !("activity" in req.query)) {
-        const errorMessage: errorResponse = {
-            path: req.originalUrl,
-            message: "Bad request"
-        }
+    const allowedParams = ["height", "weight", "age", "sex", "activity"];
+    const validity = validateParams(allowedParams, req.query, req.originalUrl);
 
-        res.status(400).send(errorMessage);
+    if(validity !== true){
+        res.status(validity.errorCode);
+        res.send(validity);
         return;
     }
 
     const heightValidate: Validatable = {
-        valueName: "height",
+        valueName: allowedParams[0],
         value: +req.query.height,
         require: true,
         min: 0,
@@ -81,7 +80,7 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
     }
 
     const weightValidate: Validatable = {
-        valueName: "weight",
+        valueName: allowedParams[1],
         value: +req.query.weight,
         require: true,
         min: 0,
@@ -89,7 +88,7 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
     }
 
     const ageValidate: Validatable = {
-        valueName: "age",
+        valueName: allowedParams[2],
         value: +req.query.age,
         require: true,
         min: 0,
@@ -97,14 +96,14 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
     }
 
     const sexValidate: Validatable = {
-        valueName: "sex",
+        valueName: allowedParams[3],
         value: <string>req.query.sex,
         require: true,
         allowedValues: Object.keys(sexValues)
     }
 
     const activityValidate: Validatable = {
-        valueName: "activity",
+        valueName: allowedParams[4],
         value: <string>req.query.activity,
         require: true,
         allowedValues: Object.keys(activityValues)
@@ -113,6 +112,7 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
     if(!validate(heightValidate)[0] || !validate(weightValidate)[0] || !validate(ageValidate)[0] || !validate(sexValidate)[0] || !validate(activityValidate)[0]) {
         const message = validate(heightValidate)[1] + validate(weightValidate)[1] + validate(ageValidate)[1] + validate(sexValidate)[1] + validate(activityValidate)[1];
         const errorMessage: errorResponse = {
+            errorCode: 400,
             path: req.originalUrl,
             message: message
         }
@@ -125,13 +125,33 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
 }
 
 export const validateNoParams: Middleware = (req, res, next) => {
-    if(Object.keys(req.query).length !== 0) {
-        const errorMessage: errorResponse = {
-            path: req.originalUrl,
-            message: "Bad request. No params should be provided"
-        }
-        res.status(400).send(errorMessage);
+    const allowedParams = [];
+    const validity = validateParams(allowedParams, req.query, req.originalUrl, "Bad request. No params should be provided.");
+
+    if(validity !== true){
+        res.status(validity.errorCode);
+        res.send(validity);
         return;
     }
     next();
+}
+
+function validateParams(allowedParams: string[], paramsInRequest: Object, originalUrl: string, customErrorMessage?: string): true|errorResponse{
+    const errorMessage: errorResponse = {
+        errorCode: 400,
+        path: originalUrl,
+        message: customErrorMessage ? customErrorMessage : "Bad request"
+    }
+
+    if(Object.keys(paramsInRequest).length != allowedParams.length){
+        return errorMessage;
+    }
+
+    for(const param in allowedParams){
+        if(!(allowedParams[param] in paramsInRequest)) {
+            return errorMessage;
+        }
+    }
+
+    return true;
 }

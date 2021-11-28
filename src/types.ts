@@ -48,6 +48,7 @@ export type Route = {
 }
 
 export type errorResponse = {
+    errorCode: number;
     path: string;
     message: string;
 }
