@@ -4,14 +4,16 @@ export type BmrToCalculate = {
     height: number;
     age: number;
     sex: string;
+    inImperial: string;
 };
 
-export type CpmToCalculate = {
+export type TmrToCalculate = {
     weight: number;
     height: number;
     age: number;
     sex: string;
     activity: string;
+    inImperial: string;
 };
 
 export type CalculatedBmr = {
@@ -20,15 +22,17 @@ export type CalculatedBmr = {
     age: number;
     sex: string;
     bmr: number;
+    inImperial: string;
 };
 
-export type CalculatedCpm = {
+export type CalculatedTmr = {
     weight: number;
     height: number;
     age: number;
     sex: string;
     activity: string;
-    cpm: number;
+    tmr: number;
+    inImperial: string;
 };
 
 
@@ -52,3 +56,9 @@ export type errorResponse = {
     path: string;
     message: string;
 }
+
+export type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never : K }[keyof T];
+export type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : never }[keyof T];
+
+export const kgToPound:number = 0.45359237;
+export const cmToInches:number = 2.54;

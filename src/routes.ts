@@ -1,7 +1,7 @@
 import { Route } from "./types";
 import { calculateBmr, getActivityValues, getSexes } from "./handlers/bmrHandler";
-import { calculateCpm } from "./handlers/cpmHandler";
-import { validateParamsBmr, validateNoParams, validateParamsCpm } from "../middleware";
+import { calculateTmr } from "./handlers/tmrHandler";
+import { validateParamsBmr, validateNoParams, validateParamsTmr } from "../middleware";
 import { getHome } from "./handlers/homeHandler";
 
 export const routes: Route[] = [
@@ -35,8 +35,8 @@ export const routes: Route[] = [
 
     {
         method: 'get',
-        path: '/calculate-cpm',
-        middleware: [validateParamsCpm],
-        handler: calculateCpm
+        path: '/calculate-tmr',
+        middleware: [validateParamsTmr],
+        handler: calculateTmr
     }
 ]

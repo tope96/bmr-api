@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import { request, expect } from 'chai';
 import chaiHttp from 'chai-http';
-import { CalculatedBmr, CalculatedCpm, errorResponse } from '../src/types';
+import { CalculatedBmr, CalculatedTmr, errorResponse } from '../src/types';
 import { sexValues } from '../src/services/values/sexValues';
 
 chai.use(chaiHttp);
@@ -21,13 +21,30 @@ describe("Start", () => {
 
 describe("BMR", () => {
   it("Should calculate bmr for male", async () => {
-    return request(server).get("/calculate-bmr?weight=64&height=170&age=24&sex=male").then(res => {
-      const expectResult: CalculatedBmr = {
+    return request(server).get("/calculate-bmr?weight=64&height=170&age=24&sex=male&inImperial=false").then(res => {
+      const expectResult = {
         "weight": 64,
         "height": 170,
         "age": 24,
         "sex": "male",
-        "bmr": 1578.78
+        "inImperial": "false",
+        "bmr": 1578.78,
+      }
+
+      expect(res.status).to.equal(200);
+      expect(<CalculatedBmr>res.body).to.eql(expectResult);
+    })
+  });
+
+  it("Should calculate bmr for male in imperial", async () => {
+    return request(server).get("/calculate-bmr?weight=141&height=67&age=24&sex=male&inImperial=true").then(res => {
+      const expectResult = {
+        "weight": 141,
+        "height": 67,
+        "age": 24,
+        "sex": "male",
+        "inImperial": "true",
+        "bmr": 1579.47,
       }
 
       expect(res.status).to.equal(200);
@@ -36,13 +53,30 @@ describe("BMR", () => {
   });
 
     it("Should calculate bmr for female", async () => {
-      return request(server).get("/calculate-bmr?weight=64&height=170&age=24&sex=female").then(res => {
+      return request(server).get("/calculate-bmr?weight=64&height=170&age=24&sex=female&inImperial=false").then(res => {
         const expectResult: CalculatedBmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "female",
-          "bmr": 1422.78
+          "bmr": 1422.78,
+          "inImperial": "false"
+        }
+
+        expect(res.status).to.equal(200);
+        expect(<CalculatedBmr>res.body).to.eql(expectResult);
+      })
+    });
+
+    it("Should calculate bmr for female in imperial", async () => {
+      return request(server).get("/calculate-bmr?weight=141&height=67&age=24&sex=female&inImperial=true").then(res => {
+        const expectResult: CalculatedBmr = {
+          "weight": 141,
+          "height": 67,
+          "age": 24,
+          "sex": "female",
+          "bmr": 1423.47,
+          "inImperial": "true"
         }
 
         expect(res.status).to.equal(200);
@@ -51,7 +85,7 @@ describe("BMR", () => {
     });
 
     it("Should throw bad request", async () => {
-      const pathToTest = "/calculate-bmr?weight=64&height=170&age=24";
+      const pathToTest = "/calculate-bmr?weight=64&height=170&age=24&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -66,7 +100,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad weight", async () => {
       const badWeight = 647;
-      const pathToTest = "/calculate-bmr?height=170&age=24&weight=" + badWeight + "&sex=male";
+      const pathToTest = "/calculate-bmr?height=170&age=24&weight=" + badWeight + "&sex=male&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -82,7 +116,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad height", async () => {
       const badheight = 280;
-      const pathToTest = "/calculate-bmr?height=" + badheight + "&age=24&weight=64&sex=male";
+      const pathToTest = "/calculate-bmr?height=" + badheight + "&age=24&weight=64&sex=male&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -98,7 +132,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad age", async () => {
       const badAge = 280;
-      const pathToTest = "/calculate-bmr?height=170&age=" + badAge + "&weight=64&sex=male";
+      const pathToTest = "/calculate-bmr?height=170&age=" + badAge + "&weight=64&sex=male&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -114,7 +148,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad sex", async () => {
       const badSex = "test";
-      const pathToTest = "/calculate-bmr?height=170&age=24&weight=64&sex=" + badSex;
+      const pathToTest = "/calculate-bmr?height=170&age=24&weight=64&sex=" + badSex + "&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -130,136 +164,144 @@ describe("BMR", () => {
 
   });
 
-  describe("CPM", () => {
-    it("Should calculate cpm for male with none activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=male&activity=none").then(res => {
-        const expectResult: CalculatedCpm = {
+  describe("TMR", () => {
+    it("Should calculate tmr for male with none activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=male&activity=none&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "male",
           "activity": "none",
-          "cpm": 1894.54
+          "tmr": 1894.54,
+          "inImperial": "false"
       }
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for male with medium activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=male&activity=medium").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for male with medium activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=male&activity=medium&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "male",
           "activity": "medium",
-          "cpm": 2526.05
+          "tmr": 2526.05,
+          "inImperial": "false"
       }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for male with high activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=male&activity=high").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for male with high activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=male&activity=high&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "male",
           "activity": "high",
-          "cpm": 2841.8
+          "tmr": 2841.8,
+          "inImperial": "false"
       }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for male with highest activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=male&activity=highest").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for male with highest activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=male&activity=highest&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "male",
           "activity": "highest",
-          "cpm": 3473.32
+          "tmr": 3473.32,
+          "inImperial": "false"
       }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for female with none activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=female&activity=none").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for female with none activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=female&activity=none&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "female",
           "activity": "none",
-          "cpm": 1707.34
+          "tmr": 1707.34,
+          "inImperial": "false"
         }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for female with medium activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=female&activity=medium").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for female with medium activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=female&activity=medium&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "female",
           "activity": "medium",
-          "cpm": 2276.45
+          "tmr": 2276.45,
+          "inImperial": "false"
       }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for female with high activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=female&activity=high").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for female with high activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=female&activity=high&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "female",
           "activity": "high",
-          "cpm": 2561
+          "tmr": 2561,
+          "inImperial": "false"
       }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
-    it("Should calculate cpm for female with highest activity", async () => {
-      return request(server).get("/calculate-cpm?weight=64&height=170&age=24&sex=female&activity=highest").then(res => {
-        const expectResult: CalculatedCpm = {
+    it("Should calculate tmr for female with highest activity", async () => {
+      return request(server).get("/calculate-tmr?weight=64&height=170&age=24&sex=female&activity=highest&inImperial=false").then(res => {
+        const expectResult: CalculatedTmr = {
           "weight": 64,
           "height": 170,
           "age": 24,
           "sex": "female",
           "activity": "highest",
-          "cpm": 3130.12
+          "tmr": 3130.12,
+          "inImperial": "false"
       }
 
         expect(res.status).to.equal(200);
-        expect(<CalculatedCpm>res.body).to.eql(expectResult);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
 
     it("Should throw bad request", async () => {
-      const pathToTest = "/calculate-cpm?weight=64&height=170&age=24";
+      const pathToTest = "/calculate-tmr?weight=64&height=170&age=24&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -274,7 +316,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad weight", async () => {
       const badWeight = 647;
-      const pathToTest = "/calculate-cpm?weight=" + badWeight + "&height=170&age=24&sex=male&activity=highest";
+      const pathToTest = "/calculate-tmr?weight=" + badWeight + "&height=170&age=24&sex=male&activity=highest&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -290,7 +332,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad height", async () => {
       const badheight = 280;
-      const pathToTest = "/calculate-cpm?weight=64&height=" + badheight + "&age=24&sex=male&activity=highest";
+      const pathToTest = "/calculate-tmr?weight=64&height=" + badheight + "&age=24&sex=male&activity=highest&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -306,7 +348,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad age", async () => {
       const badAge = 280;
-      const pathToTest = "/calculate-cpm?weight=64&height=170&age=" + badAge + "&sex=male&activity=highest";
+      const pathToTest = "/calculate-tmr?weight=64&height=170&age=" + badAge + "&sex=male&activity=highest&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -322,7 +364,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad sex", async () => {
       const badSex = "test";
-      const pathToTest = "/calculate-cpm?weight=64&height=170&age=24&sex=" + badSex + "&activity=highest";
+      const pathToTest = "/calculate-tmr?weight=64&height=170&age=24&sex=" + badSex + "&activity=highest&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -338,7 +380,7 @@ describe("BMR", () => {
 
     it("Should throw bad request. Bad activity", async () => {
       const badActivity = "test";
-      const pathToTest = "/calculate-cpm?weight=64&height=170&age=24&sex=male&activity=" + badActivity;
+      const pathToTest = "/calculate-tmr?weight=64&height=170&age=24&sex=male&activity=" + badActivity + "&inImperial=false";
 
       return request(server).get(pathToTest).then(res => {
         const error: errorResponse = {
@@ -349,6 +391,23 @@ describe("BMR", () => {
 
         expect(res.status).to.equal(400);
         expect(res.body).to.eql(error)
+      })
+    });
+
+    it("Should calculate tmr for female with highest activity in imperial", async () => {
+      return request(server).get("/calculate-tmr?weight=141&height=67&age=24&sex=female&activity=highest&inImperial=true").then(res => {
+        const expectResult: CalculatedTmr = {
+          "weight": 141,
+          "height": 67,
+          "age": 24,
+          "sex": "female",
+          "activity": "highest",
+          "tmr": 3131.63,
+          "inImperial": "true"
+      }
+
+        expect(res.status).to.equal(200);
+        expect(<CalculatedTmr>res.body).to.eql(expectResult);
       })
     });
   });

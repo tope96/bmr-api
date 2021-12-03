@@ -1,12 +1,13 @@
 import { RequestHandler as Middleware } from 'express';
-import { errorResponse } from './src/types';
+import { errorResponse, BmrToCalculate, RequiredKeys, OptionalKeys } from './src/types';
 import { Validatable, validate } from './src/services/validators';
 import { activityValues } from './src/services/values/activityValues';
 import { sexValues } from './src/services/values/sexValues';
+import { inImperialValues } from './src/services/values/inImperialValues';
 
 export const validateParamsBmr: Middleware = (req, res, next) => {
 
-    const allowedParams = ["height", "weight", "age", "sex"];
+    const allowedParams = ["height", "weight", "age", "sex", "inImperial"];
     const validity = validateParams(allowedParams, req.query, req.originalUrl);
 
     if(validity !== true){
@@ -46,8 +47,15 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
         allowedValues: Object.keys(sexValues)
     }
 
-    if(!validate(heightValidate)[0] || !validate(weightValidate)[0] || !validate(ageValidate)[0] || !validate(sexValidate)[0]) {
-        const message = validate(heightValidate)[1] + validate(weightValidate)[1] + validate(ageValidate)[1] + validate(sexValidate)[1]
+    const inImperial: Validatable = {
+        valueName: allowedParams[4],
+        value: <string>req.query.inImperial,
+        require: true,
+        allowedValues: Object.keys(inImperialValues)
+    }
+
+    if(!validate(heightValidate)[0] || !validate(weightValidate)[0] || !validate(ageValidate)[0] || !validate(sexValidate)[0] || !validate(inImperial)[0]) {
+        const message = validate(heightValidate)[1] + validate(weightValidate)[1] + validate(ageValidate)[1] + validate(sexValidate)[1] + validate(inImperial)[1]
         const errorMessage: errorResponse = {
             errorCode: 400,
             path: req.originalUrl,
@@ -61,8 +69,8 @@ export const validateParamsBmr: Middleware = (req, res, next) => {
     next();
 }
 
-export const validateParamsCpm: Middleware = (req, res, next) => {
-    const allowedParams = ["height", "weight", "age", "sex", "activity"];
+export const validateParamsTmr: Middleware = (req, res, next) => {
+    const allowedParams = ["height", "weight", "age", "sex", "activity", "inImperial"];
     const validity = validateParams(allowedParams, req.query, req.originalUrl);
 
     if(validity !== true){
@@ -109,8 +117,15 @@ export const validateParamsCpm: Middleware = (req, res, next) => {
         allowedValues: Object.keys(activityValues)
     }
 
-    if(!validate(heightValidate)[0] || !validate(weightValidate)[0] || !validate(ageValidate)[0] || !validate(sexValidate)[0] || !validate(activityValidate)[0]) {
-        const message = validate(heightValidate)[1] + validate(weightValidate)[1] + validate(ageValidate)[1] + validate(sexValidate)[1] + validate(activityValidate)[1];
+    const inImperial: Validatable = {
+        valueName: allowedParams[4],
+        value: <string>req.query.inImperial,
+        require: true,
+        allowedValues: Object.keys(inImperialValues)
+    }
+
+    if(!validate(heightValidate)[0] || !validate(weightValidate)[0] || !validate(ageValidate)[0] || !validate(sexValidate)[0] || !validate(activityValidate)[0] || !validate(inImperial)[0]) {
+        const message = validate(heightValidate)[1] + validate(weightValidate)[1] + validate(ageValidate)[1] + validate(sexValidate)[1] + validate(activityValidate)[1] + validate(inImperial)[1];
         const errorMessage: errorResponse = {
             errorCode: 400,
             path: req.originalUrl,

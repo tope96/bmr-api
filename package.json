@@ -2,14 +2,14 @@
   "name": "bmr-api",
   "author": "https://github.com/tope96",
   "version": "1.0.0",
-  "description": "API for calculating BMR and CPM indicators.",
+  "description": "API for calculating BMR and TMR indicators.",
   "main": "index.js",
   "scripts": {
     "start-ts": "nodemon app.ts",
     "test": "mocha --config tests/runners/.mocharc.jsonc",
     "start-js": "tsc; node ./js/app.js"
   },
-  "keywords": ["bmr", "cpm", "fit", "fitness", "body"],
+  "keywords": ["bmr", "tmr", "fit", "fitness", "body"],
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.2.22",
